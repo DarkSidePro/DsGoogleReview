@@ -24,6 +24,8 @@
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
+use PrestaShop\PrestaShop\Adapter\SymfonyContainer;
+
 require_once ('vendor/autoload.php');
 
 if (!defined('_PS_VERSION_')) {
@@ -81,18 +83,9 @@ class Dsgooglereviews extends Module
      */
     public function getContent()
     {
-        $categoryData = $this->getCategoryData();
-        $token = Tools::getAdminTokenLite('AdministratorDshomecategories');
+        $router = SymfonyContainer::getInstance()->get('router');
 
-        $this->context->smarty->assign('module_dir', $this->_path);
-        $this->context->smarty->assign('categoryData', $categoryData);
-        $this->context->smarty->assign('token', $token);
-        $this->context->smarty->assign('link', $this->context->link);
-        $this->context->smarty->assign('namemodules', $this->name);
-
-        $output = $this->context->smarty->fetch($this->local_path.'views/templates/admin/configure.tpl');
-
-        return $output;
+        return Tools::redirectAdmin($router->generate('ds_google_reviews_form'));
     }
 
     /**
@@ -117,90 +110,8 @@ class Dsgooglereviews extends Module
 
     public function hookDisplayHome()
     {
-        $categories = $this->getHomeActiveCategories();
-        $this->context->smarty->assign('categories', $categories);
-
         $output = $this->context->smarty->fetch($this->local_path.'views/templates/hook/displayHome.tpl');
 
         return $output;
-    }
-
-    private function getCategories()
-    {
-        $sql = new DbQuery();
-        $sql->select('id_category')
-            ->from('category');
-        
-        $result = Db::getInstance()->executeS($sql);         
-
-        return $result;
-    }
-
-    private function createCategoryEntry($id)
-    {
-        $sql = Db::getInstance()->insert('dshomecategory', array(
-            'category_id' => (int) $id,
-            'status' => 0
-        ));
-    }
-
-    private function initCategoryData()
-    {
-        $categoryIds = $this->getCategories();
-
-
-
-        foreach ($categoryIds as $id) {        
-            $id_category = $id['id_category'];
-
-            $this->createCategoryEntry($id_category);
-        }
-    }
-
-    private function getCategoryData()
-    {
-        $sql = new DbQuery();
-        $sql->select('dshc.*, cl.name')
-            ->from('dshomecategory', 'dshc')
-            ->leftJoin('category_lang', 'cl', 'cl.id_category = dshc.category_id')
-            ->groupBy('dshc.id')
-            ->where('cl.id_lang =' . $this->context->language->id);
-        
-        $result = Db::getInstance()->executeS($sql);         
-
-        return $result;
-    }
-
-    private function getHomeActiveCategories()
-    {
-        $sql = new DbQuery();
-        $sql->select('dshc.category_id, cl.name, cl.link_rewrite')
-            ->from('dshomecategory', 'dshc')
-            ->leftJoin('category_lang', 'cl', 'cl.id_category = dshc.category_id')
-            ->where('cl.id_lang =' . $this->context->language->id . ' AND dshc.status = 1');
-
-        $result = Db::getInstance()->executeS($sql);         
-
-        return $result;   
-    }
-
-    public function hookActionCategoryAdd($params)
-    {
-        $categoryId = $params['id_category'];
-
-        $this->createCategoryEntry($categoryId);
-    }
-
-    public function hookActionCategoryDelete($params)
-    {
-        $categoryId = $params['id_category'];
-
-        $this->removeCategoryEntry($categoryId);
-    }
-
-    private function removeCategoryEntry($categoryId)
-    {
-        $sql = 'DELETE FROM '._DB_PREFIX_.'dshomecategory WHERE category_id =' . $categoryId;
-        Db::getInstance()->execute($sql);
     }
 }
