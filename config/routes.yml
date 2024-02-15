@@ -1,0 +1,8 @@
+ds_google_reviews_form:
+  path: /ds_google_reviews_form
+  methods: [GET, POST]
+  defaults:
+    _controller: 'DarkSide\DsGoogleReview\Controller\DsGoogleReviewsController::index'
+    # Needed to work with tab system
+    _legacy_controller: AdminDsGoogleReviewsController
+    _legacy_link: AdminDsGoogleReviewsController
