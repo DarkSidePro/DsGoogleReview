@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<module>
+	<name>dshomecategories</name>
+	<displayName><![CDATA[DS: Google reviews]]></displayName>
+	<version><![CDATA[1.0.0]]></version>
+	<description><![CDATA[Display Google Reviews on home page in your store]]></description>
+	<author><![CDATA[Dark-Side.pro]]></author>
+	<tab><![CDATA[administration]]></tab>
+	<is_configurable>1</is_configurable>
+	<need_instance>1</need_instance>
+</module>

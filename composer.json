@@ -1,0 +1,20 @@
+{
+    "name": "darksidepro/dsgooglereviews",
+    "description": "With this module you can get Google Reviews and display it on homepage in your store",
+    "type": "module",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Darksidepro\\Dsgooglereviews\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Patryk Tchorzewski",
+            "email": "patryk@dark-side.pro"
+        }
+    ],
+    "require": {
+        "php": "8.1.*"
+    }
+}
